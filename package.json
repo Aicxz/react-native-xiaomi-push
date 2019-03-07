@@ -1,5 +1,5 @@
 {
-  "name": "react-native-xiaomi-push",
+  "name": "@aicxz/react-native-xiaomi-push",
   "version": "1.0.0",
   "description": "A react native module for xiaomi push.",
   "author": "Aicxz",
