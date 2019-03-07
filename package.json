@@ -9,9 +9,7 @@
       "url": "git@github.com:Aicxz/react-native-xiaomi-push.git"
   },
   "main": "index.js",
-  "scripts": {
-      "start": "node ./scripts/run.js"
-  },
+  "scripts": {},
   "keywords": [
       "react-native",
       "xiaomi-push",
