@@ -1,0 +1,26 @@
+{
+  "name": "react-native-xiaomi-push",
+  "version": "1.0.0",
+  "description": "A react native module for xiaomi push.",
+  "author": "Aicxz",
+  "license": "MIT",
+  "repository": {
+      "type": "git",
+      "url": "git@github.com:Aicxz/react-native-xiaomi-push.git"
+  },
+  "main": "index.js",
+  "scripts": {
+      "start": "node ./scripts/run.js"
+  },
+  "keywords": [
+      "react-native",
+      "xiaomi-push",
+      "xiaomi",
+      "push"
+  ],
+  "rnpm": {
+      "android": {
+          "packageInstance": "new XiaomiPushPackage()"
+      }
+  }
+}
