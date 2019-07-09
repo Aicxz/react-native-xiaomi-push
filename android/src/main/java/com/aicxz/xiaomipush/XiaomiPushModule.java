@@ -2,6 +2,9 @@ package com.aicxz.xiaomipush;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -28,8 +31,8 @@ public class XiaomiPushModule extends ReactContextBaseJavaModule {
     private static WritableMap mParams = null;
 
     private static ReactApplicationContext reactContext = null;
-    public static final String APP_ID = "2882303761517878499";
-    public static final String APP_KEY = "5621787875499";
+    public static final String KEY_APP_ID = "XIAOMI_APPID";
+    public static final String KEY_APP_KEY = "XIAOMI_APPKEY";
 
     private final static String RECEIVE_REG_ID = "XiaomiPushReceiveRegId";
 
@@ -55,10 +58,44 @@ public class XiaomiPushModule extends ReactContextBaseJavaModule {
      * 初始化推送服务
      */
     @ReactMethod
-    public void registerPush() {
-        if(shouldInit()) {
-            MiPushClient.registerPush(mContext.getApplicationContext(), APP_ID, APP_KEY);
-            reactContext = getReactApplicationContext();
+    public void registerPush(Promise promise) {
+
+        if (shouldInit()) {
+
+            Bundle metaData = null;
+            String appId = "";
+            String appKey = "";
+
+            try {
+
+                ApplicationInfo appInfo = getReactApplicationContext().getPackageManager().getApplicationInfo(
+                        getReactApplicationContext().getPackageName(), PackageManager.GET_META_DATA);
+
+                if (null != appInfo)
+                    metaData = appInfo.metaData;
+
+                if (null != metaData) {
+                    appId = metaData.getString(KEY_APP_ID);
+                    appKey = metaData.getString(KEY_APP_KEY);
+                }
+
+                if (appId == null || appId.isEmpty() || appKey == null || appKey.isEmpty()) {
+                    promise.resolve("AppId or AppKey can't be null");
+                    return;
+                }
+
+                appId = appId.split("=")[1];
+                appKey = appKey.split("=")[1];
+
+                MiPushClient.registerPush(mContext.getApplicationContext(), appId, appKey);
+
+                reactContext = getReactApplicationContext();
+
+            } catch (PackageManager.NameNotFoundException e) {
+
+                promise.resolve(e.getMessage());
+
+            }
         }
     }
 
@@ -110,8 +147,8 @@ public class XiaomiPushModule extends ReactContextBaseJavaModule {
 
     private static void sendEvent() {
         reactContext
-            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-            .emit(mEvent, mParams);
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(mEvent, mParams);
 
         XiaomiPushModule.mParams = null;
     }
@@ -132,36 +169,36 @@ public class XiaomiPushModule extends ReactContextBaseJavaModule {
         @Override
         public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
             mMessage = message.getContent();
-            if(!TextUtils.isEmpty(message.getTopic())) {
-                mTopic=message.getTopic();
-            } else if(!TextUtils.isEmpty(message.getAlias())) {
-                mAlias=message.getAlias();
-            } else if(!TextUtils.isEmpty(message.getUserAccount())) {
-                mUserAccount=message.getUserAccount();
+            if (!TextUtils.isEmpty(message.getTopic())) {
+                mTopic = message.getTopic();
+            } else if (!TextUtils.isEmpty(message.getAlias())) {
+                mAlias = message.getAlias();
+            } else if (!TextUtils.isEmpty(message.getUserAccount())) {
+                mUserAccount = message.getUserAccount();
             }
         }
 
         @Override
         public void onNotificationMessageClicked(Context context, MiPushMessage message) {
             mMessage = message.getContent();
-            if(!TextUtils.isEmpty(message.getTopic())) {
-                mTopic=message.getTopic();
-            } else if(!TextUtils.isEmpty(message.getAlias())) {
-                mAlias=message.getAlias();
-            } else if(!TextUtils.isEmpty(message.getUserAccount())) {
-                mUserAccount=message.getUserAccount();
+            if (!TextUtils.isEmpty(message.getTopic())) {
+                mTopic = message.getTopic();
+            } else if (!TextUtils.isEmpty(message.getAlias())) {
+                mAlias = message.getAlias();
+            } else if (!TextUtils.isEmpty(message.getUserAccount())) {
+                mUserAccount = message.getUserAccount();
             }
         }
 
         @Override
         public void onNotificationMessageArrived(Context context, MiPushMessage message) {
             mMessage = message.getContent();
-            if(!TextUtils.isEmpty(message.getTopic())) {
-                mTopic=message.getTopic();
-            } else if(!TextUtils.isEmpty(message.getAlias())) {
-                mAlias=message.getAlias();
-            } else if(!TextUtils.isEmpty(message.getUserAccount())) {
-                mUserAccount=message.getUserAccount();
+            if (!TextUtils.isEmpty(message.getTopic())) {
+                mTopic = message.getTopic();
+            } else if (!TextUtils.isEmpty(message.getAlias())) {
+                mAlias = message.getAlias();
+            } else if (!TextUtils.isEmpty(message.getUserAccount())) {
+                mUserAccount = message.getUserAccount();
             }
         }
 
